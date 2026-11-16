@@ -69,7 +69,7 @@ namespace SFA.DAS.Zendesk.Monitor.UnitTests.Tests
             }
             catch
             {
-                return (TimerInfo)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(TimerInfo));
+                return (TimerInfo)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(TimerInfo));
             }
         }
     }
@@ -77,7 +77,7 @@ namespace SFA.DAS.Zendesk.Monitor.UnitTests.Tests
 
     public class FakeDurableTaskClient : DurableTaskClient
     {
-        public object? LastInput { get; private set; }
+        public object LastInput { get; private set; }
         public StartOrchestrationOptions? LastOptions { get; private set; }
         public int ScheduleCount { get; private set; }
         public OrchestrationRuntimeStatus? ExistingStatus { get; set; }   // null = no existing instance

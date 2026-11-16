@@ -1,20 +1,12 @@
-﻿using AutoMapper;
-using FluentAssertions;
+﻿using FluentAssertions;
 using SFA.DAS.Zendesk.Monitor.Zendesk.Model;
 using System.Collections.Generic;
 using Xunit;
 
 namespace SFA.DAS.Zendesk.Monitor.UnitTests
 {
-    public class MappingProfileTests
+    public class TicketMapperTests
     {
-        [Fact]
-        public void TestProfileIsValid()
-        {
-            var mapperConfig = new MapperConfiguration(cfg => cfg.AddProfile<TicketProfile>());
-            mapperConfig.AssertConfigurationIsValid();
-        }
-
         public static IEnumerable<object[]> ViaTestData => new List<object[]>
         {
             new object[]
@@ -74,11 +66,9 @@ namespace SFA.DAS.Zendesk.Monitor.UnitTests
         [Theory, MemberData(nameof(ViaTestData))]
         public void TestViaMapping(Via via, string viaText)
         {
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<TicketProfile>()).CreateMapper();
-
             var ticket = new Ticket { Via = via };
 
-            var mapped = mapper.Map<Middleware.Model.Ticket>(ticket);
+            var mapped = TicketMapper.MapTicket(ticket);
 
             mapped.Via.Should().Be(viaText);
         }
@@ -90,14 +80,12 @@ namespace SFA.DAS.Zendesk.Monitor.UnitTests
         [InlineData("middleware_destination_", "")]  // ability to "unset" destination
         public void TestDestinationMapping(string tag, string destination)
         {
-            var mapper = new MapperConfiguration(cfg => cfg.AddProfile<TicketProfile>()).CreateMapper();
-
             var ticket = new Ticket
             {
                 Tags = new List<string> { tag },
             };
 
-            var mapped = mapper.Map<Middleware.Model.Ticket>(ticket);
+            var mapped = TicketMapper.MapTicket(ticket);
 
             mapped.Destination.Should().Be(destination);
         }

@@ -27,6 +27,13 @@
     </PackageReference>
   </ItemGroup>
 
+	<!--These packages are required to override transient package vulnerabilities.
+	    Do not remove unless `dotnet nuget why <project> <package>` shows the parent package
+        no longer brings in a vulnerable version.-->
+    <ItemGroup Label="Transitive pins">
+		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.3.14" />
+    </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Zendesk.Monitor\SFA.DAS.Zendesk.Monitor.csproj" />
   </ItemGroup>

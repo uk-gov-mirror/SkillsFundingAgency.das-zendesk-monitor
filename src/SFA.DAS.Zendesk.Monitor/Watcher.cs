@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using SFA.DAS.Zendesk.Monitor.Zendesk;
 using System;
@@ -9,10 +8,6 @@ namespace SFA.DAS.Zendesk.Monitor
 {
     public class Watcher
     {
-        private static readonly IMapper MapperConfig =
-            new MapperConfiguration(c => c.AddProfile<TicketProfile>())
-                .CreateMapper();
-
         private readonly ISharingTickets zendesk;
         private readonly Middleware.IApi middleware;
         private readonly ILogger<Watcher> logger;
@@ -40,11 +35,11 @@ namespace SFA.DAS.Zendesk.Monitor
 
         private async Task ShareTicket(SharedTicket share)
         {
-            logger?.LogInformation($"Sharing {share.Reason} ticket {share.Id}");
+            logger?.LogInformation("Sharing {Reason} ticket {TicketId}", share.Reason, share.Id);
 
             await zendesk.MarkSharing(share);
 
-            var wrap = MapperConfig.Map<Middleware.EventWrapper>(share.Response);
+            var wrap = TicketMapper.Map(share.Response);
             string json = string.Empty;
 
             try
@@ -59,7 +54,7 @@ namespace SFA.DAS.Zendesk.Monitor
 
                 await zendesk.MarkShared(share);
 
-                logger?.LogInformation($"Shared {share.Reason} ticket {share.Id}");
+                logger?.LogInformation("Shared {Reason} ticket {TicketId}", share.Reason, share.Id);
             }
             catch (Exception ex)
             {

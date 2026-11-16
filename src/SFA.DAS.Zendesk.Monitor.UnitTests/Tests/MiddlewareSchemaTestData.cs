@@ -1,6 +1,4 @@
 ﻿using AutoFixture;
-using AutoMapper;
-using SFA.DAS.Zendesk.Monitor.Middleware;
 using SFA.DAS.Zendesk.Monitor.Zendesk.Model;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,11 +8,7 @@ namespace SFA.DAS.Zendesk.Monitor.UnitTests
 {
     public class MiddlewareSchemaTestData : IEnumerable<object[]>
     {
-        static readonly IMapper mapperConfiguration =
-            new MapperConfiguration(cfg => cfg.AddProfile<TicketProfile>())
-            .CreateMapper(); 
-        
-        public IEnumerator<object[]> GetEnumerator() 
+        public IEnumerator<object[]> GetEnumerator()
             => ZendeskTicketData()
                 .Select(ConvertZendeskToMiddleware)
                 .GetEnumerator();
@@ -61,7 +55,7 @@ namespace SFA.DAS.Zendesk.Monitor.UnitTests
                             Channel = "email",
                         }
                     },
-                    Users = new []
+                    Users = new[]
                     {
                         new User
                         {
@@ -70,13 +64,13 @@ namespace SFA.DAS.Zendesk.Monitor.UnitTests
                             UserFields = new UserFields { },
                         }
                     },
-                    Organizations = new []
+                    Organizations = new[]
                     {
                         new Organization
                         {
                             Id = 1,
                             Name = "BobCo",
-                            OrganizationFields = new OrganizationFields 
+                            OrganizationFields = new OrganizationFields
                             {
                                 // TODO - this may be null / empty from Zendesk,
                                 //        but the schema mandates it's one of 
@@ -110,7 +104,7 @@ namespace SFA.DAS.Zendesk.Monitor.UnitTests
         private static object[] ConvertZendeskToMiddleware(TicketResponse t)
             => new object[]
             {
-                mapperConfiguration.Map<EventWrapper>(t)
+                TicketMapper.Map(t)
             };
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
